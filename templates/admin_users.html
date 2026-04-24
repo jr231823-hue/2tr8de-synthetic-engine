@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Users · 2TR8DE Synthetic Engine</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="login-body">
+  <div class="admin-shell">
+    <div class="admin-header">
+      <div>
+        <span>SYNTHETIC ENGINE ADMIN</span>
+        <h1>Access Approval Center</h1>
+        <p>Approve or reject new student registrations before they enter the Synthetic Engine.</p>
+      </div>
+      <div class="admin-actions-top">
+        <a href="/">Back to Engine</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+
+    <section class="admin-panel">
+      <h2>Pending Approval</h2>
+      {% if pending_users %}
+      <div class="admin-table">
+        {% for u in pending_users %}
+        <div class="admin-row">
+          <div>
+            <strong>{{ u.name }}</strong>
+            <small>@{{ u.username }}</small>
+          </div>
+          <div class="admin-actions">
+            <form method="POST" action="/admin/approve/{{ u.username }}">
+              <button class="approve-btn">Approve</button>
+            </form>
+            <form method="POST" action="/admin/reject/{{ u.username }}">
+              <button class="reject-btn">Reject</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="empty-state">No pending users.</p>
+      {% endif %}
+    </section>
+
+    <section class="admin-panel">
+      <h2>Approved Users</h2>
+      <div class="admin-table">
+        {% for u in approved_users %}
+        <div class="admin-row">
+          <div>
+            <strong>{{ u.name }}</strong>
+            <small>@{{ u.username }} · {{ u.role }}</small>
+          </div>
+          <span class="approved-badge">Approved</span>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+</body>
+</html>

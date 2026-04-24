@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2TR8DE Synthetic Engine · Login</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="login-body">
+  <div class="login-shell">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-mark">SE</div>
+        <div>
+          <h1>2TR8DE Synthetic Engine</h1>
+          <p>Private synthetic validation environment</p>
+        </div>
+      </div>
+
+      <div class="login-copy">
+        <span>PRIVATE ENGINE</span>
+        <h2>Synthetic Robustness Analyzer</h2>
+        <p>Login to access synthetic validation, Monte Carlo, Monkey Edge Test, Deep Dive analysis and portfolio decision tools.</p>
+      </div>
+
+      {% if error %}
+      <div class="login-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST" class="login-form">
+        <label>
+          Username
+          <input type="text" name="username" placeholder="student" autocomplete="username" required />
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+        </label>
+        <button type="submit">Enter Synthetic Engine</button>
+      </form>
+
+      <div class="login-note">
+        New student? <a href="/register">Create your account</a><br>
+        <small>Private access for approved 2TR8DE students only.</small>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

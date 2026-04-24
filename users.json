@@ -1,0 +1,7 @@
+{
+  "admin": {
+    "name": "2TR8DE Admin",
+    "role": "admin",
+    "password_hash": "scrypt:32768:8:1$TD2XzYOq3X0awJjT$c665b347e336a9562865c29338dbcdb4508de2433f6413c6c3f55659ca5810a953189fc6ceb80ad93fd9d6dcc45ad9e70862d8712bf96ae940de30bdfa48e93f"
+  }
+}
