@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pending Approval · 2TR8DE Synthetic Engine</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="login-body">
+  <div class="login-shell">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-mark">SE</div>
+        <div>
+          <h1>2TR8DE Synthetic Engine</h1>
+          <p>Account pending approval</p>
+        </div>
+      </div>
+
+      <div class="login-copy">
+        <span>WAITING FOR APPROVAL</span>
+        <h2>Your Synthetic Engine account was created.</h2>
+        <p>Your access is currently pending admin approval. Once approved, you will be able to enter the Synthetic Robustness Analyzer.</p>
+      </div>
+
+      <div class="login-note">
+        Logged in as: <strong>{{ user.name }}</strong><br>
+        <small>If you believe this is an error, contact the 2TR8DE team.</small>
+      </div>
+
+      <form action="/logout" method="GET" class="login-form">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
