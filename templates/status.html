@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2TR8DE Synthetic Engine · Status</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-body">
+  <main class="login-shell">
+    <section class="login-card">
+      <div class="login-brand">
+        <div class="brand-mark">SE</div>
+        <div>
+          <h1>Access Status</h1>
+          <p>2TR8DE Synthetic Engine</p>
+        </div>
+      </div>
+
+      <div class="login-copy">
+        <span>ACCOUNT STATUS</span>
+        <h2>Check your access</h2>
+        <p>Enter your username to see if your account is pending, approved or suspended.</p>
+      </div>
+
+      <form class="login-form" method="POST" action="/status">
+        <label>
+          Username
+          <input type="text" name="username" placeholder="your_username" required>
+        </label>
+        <button type="submit">Check Status</button>
+      </form>
+
+      {% if message %}
+      <div class="login-note status-result">
+        <strong>{{ message }}</strong>
+        {% if status_user %}
+        <br>
+        <small>User: {{ status_user.username }} · Role: {{ status_user.role }}</small>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div class="login-note">
+        <a href="/login">Back to login</a>
+        ·
+        <a href="/register">Create account</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

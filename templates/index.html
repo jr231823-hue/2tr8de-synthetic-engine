@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2TR8DE · Synthetic Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+    <div class="user-pill">
+      <span>{{ user.name if user else "Student" }}</span>
+      {% if user and user.role == "admin" %}<a href="/control/{{ admin_path }}">Control</a>{% endif %}<a href="/logout">Logout</a>
+    </div>
+
+
+<!-- ── HEADER ──────────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-mark">2TR8DE</span>
+      <span class="logo-sep">|</span>
+      <span class="logo-sub">Synthetic Engine</span>
+    </div>
+    <nav class="header-nav">
+      <span class="nav-tag">STRATEGY ROBUSTNESS ANALYSER</span>
+    </nav>
+  </div>
+</header>
+
+<!-- ── HERO / UPLOAD ────────────────────────────────────────────────────────── -->
+<main>
+  <section class="hero" id="upload-section">
+    <div class="hero-inner">
+      <h1 class="hero-title">
+        Test Your Strategy's<br/>
+        <span class="accent-gold">Robustness</span> at Scale
+      </h1>
+      <p class="hero-sub">
+        Upload your StrategyQuant CSV. Our engine generates <strong>1,000 synthetic equity curve
+        variations</strong> and returns a composite Robustness Score backed by statistical analysis.
+      </p>
+
+      <!-- drop zone -->
+      <div class="dropzone" id="dropzone">
+        <div class="dz-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <p class="dz-title">Drop your SQX CSV here</p>
+        <p class="dz-sub">or <span class="dz-browse">browse files</span></p>
+        <p class="dz-hint">Single file or select multiple — trade logs, summary table, or bulk export</p>
+        <input type="file" id="file-input" accept=".csv,.CSV" multiple style="display:none" />
+      </div>
+
+      <!-- progress -->
+      <div class="progress-wrap" id="progress-wrap" style="display:none">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <p class="progress-label" id="progress-label">Initialising…</p>
+      </div>
+
+      <!-- error -->
+      <div class="error-box" id="error-box" style="display:none">
+        <span class="error-icon">⚠</span>
+        <span id="error-msg"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESULTS ─────────────────────────────────────────────────────────────── -->
+  <section class="results" id="results" style="display:none">
+
+    <!-- verdict banner — shared, filled by JS -->
+    <div class="verdict-banner" id="verdict-banner">
+      <div class="verdict-inner">
+        <span class="verdict-icon" id="verdict-icon"></span>
+        <span class="verdict-text" id="verdict-text"></span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         BULK VIEW
+    ══════════════════════════════════════════════════════════ -->
+    <div id="bulk-view" style="display:none">
+
+      <!-- summary bar -->
+      <div class="bulk-summary-bar" id="bulk-summary-bar">
+        <div class="bsb-stat bsb-total">
+          <span class="bsb-val" id="bsb-total">0</span>
+          <span class="bsb-key">STRATEGIES</span>
+        </div>
+        <div class="bsb-divider"></div>
+        <div class="bsb-stat bsb-selected">
+          <span class="bsb-val" id="bsb-selected">0</span>
+          <span class="bsb-key">⭐ AUTO SELECTED</span>
+        </div>
+        <div class="bsb-divider"></div>
+        <div class="bsb-stat bsb-deploy">
+          <span class="bsb-val" id="bsb-deploy">0</span>
+          <span class="bsb-key">✅ READY TO DEPLOY</span>
+        </div>
+        <div class="bsb-divider"></div>
+        <div class="bsb-stat bsb-optimize">
+          <span class="bsb-val" id="bsb-optimize">0</span>
+          <span class="bsb-key">⚠️ OPTIMIZE FIRST</span>
+        </div>
+        <div class="bsb-divider"></div>
+        <div class="bsb-stat bsb-discard">
+          <span class="bsb-val" id="bsb-discard">0</span>
+          <span class="bsb-key">❌ DISCARD</span>
+        </div>
+      </div>
+
+      <!-- executive decision panel -->
+      <div class="executive-panel" id="executive-panel">
+        <div class="exec-left">
+          <div class="exec-eyebrow">PORTFOLIO VERDICT</div>
+          <div class="exec-verdict" id="exec-verdict">—</div>
+          <div class="exec-next" id="exec-next">Upload a batch to generate the decision summary.</div>
+        </div>
+        <div class="exec-grid">
+          <div class="exec-card">
+            <span class="exec-label">Risk Level</span>
+            <strong id="exec-risk">—</strong>
+          </div>
+          <div class="exec-card">
+            <span class="exec-label">Edge Quality</span>
+            <strong id="exec-edge">—</strong>
+          </div>
+          <div class="exec-card">
+            <span class="exec-label">Best Candidate</span>
+            <strong id="exec-best">—</strong>
+          </div>
+          <div class="exec-card">
+            <span class="exec-label">Selected / Total</span>
+            <strong id="exec-selected">—</strong>
+          </div>
+        </div>
+        <div class="exec-bullets" id="exec-bullets"></div>
+      </div>
+
+
+      <!-- filter + export controls -->
+      <div class="bulk-controls">
+        <div class="filter-group" id="filter-group">
+          <button class="filter-btn active" data-filter="visible">Active <span class="fcnt" id="fcnt-all">0</span></button>
+          <button class="filter-btn f-selected" data-filter="selected">⭐ Selected <span class="fcnt" id="fcnt-selected">0</span></button>
+          <button class="filter-btn f-deploy"   data-filter="deploy">✅ Deploy <span class="fcnt" id="fcnt-deploy">0</span></button>
+          <button class="filter-btn f-optimize" data-filter="optimize">⚠️ Optimize <span class="fcnt" id="fcnt-optimize">0</span></button>
+          <button class="filter-btn f-discard"  data-filter="discard">Show Discard <span class="fcnt" id="fcnt-discard">0</span></button>
+        </div>
+        <button class="btn-export" id="btn-export">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export Selected CSV
+        </button>
+      </div>
+
+      <!-- ranked table -->
+      <div class="bulk-table-wrap">
+        <table class="bulk-table" id="bulk-table">
+          <thead>
+            <tr>
+              <th class="th-sort th-rank"  data-col="rank">     # <span class="sort-arrow">↕</span></th>
+              <th class="th-sort"          data-col="id">       Strategy <span class="sort-arrow">↕</span></th>
+              <th class="th-sort th-score" data-col="score">    Score <span class="sort-arrow">↓</span></th>
+              <th class="th-sort"          data-col="grade">    Grade <span class="sort-arrow">↕</span></th>
+              <th>Status</th>
+              <th class="th-sort"          data-col="net_profit">Net Profit <span class="sort-arrow">↕</span></th>
+              <th class="th-sort"          data-col="drawdown"> Drawdown <span class="sort-arrow">↕</span></th>
+              <th class="th-sort"          data-col="win_rate"> Win Rate <span class="sort-arrow">↕</span></th>
+              <th class="th-sort"          data-col="sqn_score">SQN <span class="sort-arrow">↕</span></th>
+              <th class="th-sort"          data-col="ret_dd">   Ret/DD <span class="sort-arrow">↕</span></th>
+              <th>Category</th>
+              <th class="th-reason">Why</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody id="bulk-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- bulk charts -->
+      <div class="chart-grid bulk-charts" id="bulk-charts">
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">Net Profit Distribution</span></div>
+          <div class="chart-wrap"><canvas id="bulk-chart-profit"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">Drawdown Distribution</span></div>
+          <div class="chart-wrap"><canvas id="bulk-chart-dd"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">Win Rate Distribution</span></div>
+          <div class="chart-wrap"><canvas id="bulk-chart-wr"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">SQN Score Distribution</span></div>
+          <div class="chart-wrap"><canvas id="bulk-chart-sqn"></canvas></div>
+        </div>
+        <div class="chart-card span-2">
+          <div class="card-header"><span class="card-title">Net Profit vs SQN Score</span></div>
+          <div class="chart-wrap"><canvas id="bulk-chart-scatter"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">Category Distribution</span></div>
+          <div class="chart-wrap"><canvas id="bulk-chart-donut"></canvas></div>
+        </div>
+      </div>
+
+    </div><!-- /bulk-view -->
+
+    <!-- ══════════════════════════════════════════════════════════
+         SINGLE VIEW (one strategy — Monte Carlo)
+    ══════════════════════════════════════════════════════════ -->
+    <div id="single-view" style="display:none">
+
+      <!-- score banner -->
+      <div class="score-banner">
+        <div class="score-banner-inner">
+          <div class="score-main">
+            <div class="score-ring-wrap">
+              <canvas id="score-ring" width="160" height="160"></canvas>
+              <div class="score-center">
+                <span class="score-number" id="score-number">--</span>
+                <span class="score-label">/ 100</span>
+              </div>
+            </div>
+            <div class="score-text">
+              <div class="score-grade" id="score-grade">–</div>
+              <div class="score-title">Robustness Score</div>
+              <div class="score-file" id="score-file"></div>
+              <div class="score-explanation" id="score-explanation"></div>
+            </div>
+          </div>
+          <div class="score-components" id="score-components"></div>
+          <div class="score-meta" id="score-meta"></div>
+        </div>
+      </div>
+
+      <!-- chart grid -->
+      <div class="chart-grid">
+        <div class="chart-card span-2" id="card-equity">
+          <div class="card-header">
+            <span class="card-title">Synthetic Equity Curves</span>
+            <span class="card-badge" id="equity-badge">1,000 variations</span>
+          </div>
+          <div class="chart-wrap tall"><canvas id="chart-equity"></canvas></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">Category Distribution</span></div>
+          <div class="chart-wrap"><canvas id="chart-donut"></canvas></div>
+        </div>
+
+        <div class="chart-card legend-card">
+          <div class="card-header">
+            <span class="card-title">Grading System</span>
+            <span class="card-badge">Score → Action</span>
+          </div>
+          <ul class="grade-legend">
+            <li class="gl-row gl-A"><span class="gl-badge">A</span><span class="gl-range">85 – 100</span><span class="gl-action">READY TO DEPLOY TO DEMO</span></li>
+            <li class="gl-row gl-B"><span class="gl-badge">B</span><span class="gl-range">70 – 84</span><span class="gl-action">READY TO DEPLOY TO DEMO</span></li>
+            <li class="gl-row gl-C"><span class="gl-badge">C</span><span class="gl-range">55 – 69</span><span class="gl-action">OPTIMIZE IN SQX FIRST</span></li>
+            <li class="gl-row gl-D"><span class="gl-badge">D</span><span class="gl-range">40 – 54</span><span class="gl-action">DISCARD STRATEGY</span></li>
+            <li class="gl-row gl-F"><span class="gl-badge">F</span><span class="gl-range">0 – 39</span><span class="gl-action">DISCARD STRATEGY</span></li>
+          </ul>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">Net Profit Distribution</span></div>
+          <div class="chart-wrap"><canvas id="chart-profit"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">Drawdown Distribution</span></div>
+          <div class="chart-wrap"><canvas id="chart-dd"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">Win Rate Distribution</span></div>
+          <div class="chart-wrap"><canvas id="chart-wr"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="card-header"><span class="card-title">SQN Score Distribution</span></div>
+          <div class="chart-wrap"><canvas id="chart-sqn"></canvas></div>
+        </div>
+        <div class="chart-card span-2">
+          <div class="card-header"><span class="card-title">Net Profit vs SQN Score</span></div>
+          <div class="chart-wrap"><canvas id="chart-scatter"></canvas></div>
+        </div>
+        <div class="chart-card span-3">
+          <div class="card-header">
+            <span class="card-title">Input vs Synthetic Statistics</span>
+            <span class="card-badge">Mean ± Std</span>
+          </div>
+          <div class="comparison-table-wrap">
+            <table class="comparison-table">
+              <thead><tr>
+                <th>Metric</th><th>Input Mean</th><th>Input Std</th>
+                <th>Synthetic Mean</th><th>Synthetic Std</th><th>Drift</th>
+              </tr></thead>
+              <tbody id="comparison-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div><!-- /chart-grid -->
+
+    </div><!-- /single-view -->
+
+    <!-- re-analyse (shared) -->
+    <div class="reanalyse-wrap">
+      <button class="btn-secondary" id="btn-reset">Analyse Another File</button>
+    </div>
+
+  </section><!-- /results -->
+</main>
+
+<footer class="footer">
+  <span>2TR8DE Synthetic Engine &nbsp;·&nbsp; Monte Carlo Strategy Analyser</span>
+</footer>
+
+<script src="/static/js/main.js"></script>
+
+  <!-- Strategy detail modal -->
+  <div class="strategy-modal" id="strategy-modal" aria-hidden="true">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close" type="button" aria-label="Close">×</button>
+      <div class="modal-header">
+        <div>
+          <div class="modal-eyebrow">STRATEGY DEEP DIVE</div>
+          <h2 id="modal-title">Strategy</h2>
+          <p id="modal-headline">Double-click a strategy to inspect why it passed or failed.</p>
+        </div>
+        <div class="modal-scorebox">
+          <span id="modal-grade">—</span>
+          <strong id="modal-score">0.0</strong>
+          <small id="modal-recommendation">REVIEW</small>
+        </div>
+      </div>
+
+      <div class="modal-metrics">
+        <div><span>Net Profit</span><strong id="modal-profit">—</strong></div>
+        <div><span>Drawdown</span><strong id="modal-dd">—</strong></div>
+        <div><span>SQN</span><strong id="modal-sqn">—</strong></div>
+        <div><span>Ret/DD</span><strong id="modal-retdd">—</strong></div>
+      </div>
+
+
+      <div class="monkey-panel">
+        <div>
+          <span class="monkey-label">🐒 MONKEY EDGE TEST</span>
+          <strong id="modal-monkey-verdict">—</strong>
+          <small id="modal-monkey-note">Random baseline comparison</small>
+        </div>
+        <div class="monkey-stats">
+          <span>Score: <b id="modal-monkey-score">—</b></span>
+          <span>Beats Random: <b id="modal-monkey-beats">—</b></span>
+          <span>Edge: <b id="modal-monkey-edge">—</b></span>
+          <span>Monkey Median Ret/DD: <b id="modal-monkey-median">—</b></span>
+        </div>
+      </div>
+
+      <div class="modal-grid">
+        <div class="modal-section">
+          <h3>Monte Carlo Preview</h3>
+          <div class="modal-chart-wrap"><canvas id="modal-mc-chart"></canvas></div>
+          <div class="mc-stats">
+            <span>Survival: <strong id="modal-survival">—</strong></span>
+            <span>Worst 5%: <strong id="modal-p05">—</strong></span>
+            <span>Median: <strong id="modal-median">—</strong></span>
+          </div>
+        </div>
+        <div class="modal-section">
+          <h3>Why It Was Classified This Way</h3>
+          <div class="check-list" id="modal-checks"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2TR8DE Synthetic Engine · Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-body">
+  <main class="login-shell">
+    <section class="login-card">
+      <div class="login-brand">
+        <div class="brand-mark">SE</div>
+        <div>
+          <h1>2TR8DE Synthetic Engine</h1>
+          <p>Private synthetic validation environment</p>
+        </div>
+      </div>
+
+      <div class="login-copy">
+        <span>PRIVATE ENGINE</span>
+        <h2>Strategy Robustness Analyzer</h2>
+        <p>Login to access synthetic validation, Monte Carlo, Monkey Edge Test, Deep Dive analysis and portfolio decision tools.</p>
+      </div>
+
+      {% if error %}
+      <div class="login-error">{{ error }}</div>
+      {% endif %}
+
+      <form class="login-form" method="POST" action="/login">
+        <label>
+          Username
+          <input type="text" name="username" placeholder="student" required>
+        </label>
+
+        <label>
+          Password
+          <input type="password" name="password" placeholder="••••••••" required>
+        </label>
+
+        <button type="submit">Enter Synthetic Engine</button>
+      </form>
+
+      <div class="login-note">
+        <strong>New student?</strong>
+        <a href="/register">Create your account</a>
+        <br>
+        <strong>Already registered?</strong>
+        <a href="/status">Check access status</a>
+        <br>
+        <small>Private access for approved 2TR8DE students only.</small>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
