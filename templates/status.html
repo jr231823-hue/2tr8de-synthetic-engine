@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2TR8DE · Access Status</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,sans-serif;
+  background:
+    radial-gradient(circle at 20% 15%,rgba(240,192,64,.16),transparent 30%),
+    radial-gradient(circle at 80% 25%,rgba(0,212,255,.14),transparent 32%),
+    linear-gradient(145deg,#020305 0%,#06111b 48%,#020305 100%);
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  opacity:.2;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(circle at center,black 0%,transparent 72%);
+  pointer-events:none;
+}
+.shell{
+  position:relative;
+  z-index:2;
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:46px;
+  align-items:center;
+  padding:60px clamp(24px,6vw,90px);
+}
+.hero span{
+  display:inline-flex;
+  color:#00d4ff;
+  border:1px solid rgba(0,212,255,.28);
+  background:rgba(0,212,255,.07);
+  border-radius:999px;
+  padding:9px 13px;
+  font-size:12px;
+  letter-spacing:.18em;
+  font-weight:1000;
+  margin-bottom:24px;
+}
+.hero h1{
+  margin:0;
+  font-size:clamp(54px,7vw,98px);
+  line-height:.9;
+  letter-spacing:-.075em;
+  max-width:760px;
+}
+.hero h1 b{color:#f0c040}
+.hero p{
+  color:#aeb7c4;
+  max-width:590px;
+  font-size:18px;
+  line-height:1.7;
+  margin-top:26px;
+}
+.card{
+  width:min(460px,100%);
+  justify-self:end;
+  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(180deg,rgba(14,20,31,.75),rgba(4,8,14,.86));
+  backdrop-filter:blur(28px);
+  border-radius:34px;
+  padding:34px;
+  box-shadow:0 40px 120px rgba(0,0,0,.55),0 0 80px rgba(0,212,255,.07),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.mark{
+  width:56px;height:56px;border-radius:18px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#f0c040,#96670e);
+  color:#05070b;font-weight:1000;font-size:22px;letter-spacing:-.08em;
+  box-shadow:0 0 40px rgba(240,192,64,.24);
+}
+.brand h2{margin:0;font-size:19px;letter-spacing:-.02em}
+.brand small{color:#8b949e}
+form{display:grid;gap:14px}
+label{display:grid;gap:8px;color:#8b949e;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:1000}
+input{
+  width:100%;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(0,0,0,.24);
+  color:#fff;
+  border-radius:16px;
+  padding:15px 16px;
+  font-size:15px;
+  outline:none;
+}
+input:focus{border-color:rgba(240,192,64,.62);box-shadow:0 0 0 4px rgba(240,192,64,.08)}
+button{
+  border:0;border-radius:17px;padding:16px 18px;
+  background:linear-gradient(135deg,#f0c040,#d99b1d);
+  color:#05070b;font-size:15px;font-weight:1000;letter-spacing:.04em;cursor:pointer;
+  box-shadow:0 20px 48px rgba(240,192,64,.18);
+}
+.result{
+  display:flex;gap:14px;align-items:flex-start;margin-top:20px;border-radius:22px;padding:18px;
+  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045);
+}
+.icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:1000;flex:0 0 auto}
+.result strong{display:block;font-size:17px;margin-bottom:5px}
+.result p{color:#aeb7c4;margin:0 0 6px;line-height:1.45}
+.result small{color:#8b949e}
+.status-approved{border-color:rgba(40,209,124,.26);background:rgba(40,209,124,.08)}
+.status-approved .icon{background:rgba(40,209,124,.17);color:#28d17c}
+.status-pending{border-color:rgba(240,192,64,.28);background:rgba(240,192,64,.08)}
+.status-pending .icon{background:rgba(240,192,64,.16);color:#f0c040}
+.status-suspended{border-color:rgba(255,91,110,.30);background:rgba(255,91,110,.08)}
+.status-suspended .icon{background:rgba(255,91,110,.16);color:#ff5b6e}
+.status-not_found .icon,.status-default .icon{background:rgba(0,212,255,.14);color:#00d4ff}
+.actions{display:flex;gap:10px;margin-top:20px}
+.actions a{
+  flex:1;text-align:center;text-decoration:none;border-radius:999px;padding:12px 14px;
+  color:#f0c040;border:1px solid rgba(240,192,64,.24);background:rgba(240,192,64,.08);font-weight:1000;
+}
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr;padding:36px 22px}
+  .hero{text-align:center}
+  .hero h1{font-size:clamp(42px,13vw,72px);margin-inline:auto}
+  .hero p{margin-inline:auto}
+  .card{justify-self:center}
+}
+</style>
+</head>
+
+<body>
+<main class="shell">
+  <section class="hero">
+    <span>PRIVATE ACCESS CONTROL</span>
+    <h1>Check Your <b>Status</b></h1>
+    <p>Verify if your 2TR8DE Synthetic Engine account is pending, approved, suspended or not found.</p>
+  </section>
+
+  <section class="card">
+    <div class="brand">
+      <div class="mark">SE</div>
+      <div>
+        <h2>2TR8DE Synthetic Engine</h2>
+        <small>Student access verification</small>
+      </div>
+    </div>
+
+    <form method="POST" action="/status">
+      <label>
+        Username
+        <input type="text" name="username" placeholder="your_username" required>
+      </label>
+      <button type="submit">Check Status</button>
+    </form>
+
+    {% if message %}
+    <div class="result status-{{ state or 'default' }}">
+      {% if state == "approved" %}
+      <div class="icon">✓</div>
+      <div><strong>Access Approved</strong><p>{{ message }}</p>{% if status_user %}<small>{{ status_user.name }} · {{ status_user.role }}</small>{% endif %}</div>
+      {% elif state == "pending" %}
+      <div class="icon">⌛</div>
+      <div><strong>Pending Approval</strong><p>{{ message }}</p>{% if status_user %}<small>{{ status_user.name }} · waiting for admin approval</small>{% endif %}</div>
+      {% elif state == "suspended" %}
+      <div class="icon">!</div>
+      <div><strong>Access Suspended</strong><p>{{ message }}</p>{% if status_user %}<small>{{ status_user.name }} · contact support</small>{% endif %}</div>
+      {% else %}
+      <div class="icon">?</div>
+      <div><strong>Account Not Found</strong><p>{{ message }}</p><small>Check your username or create a new access request.</small></div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="actions">
+      <a href="/login">Sign in</a>
+      <a href="/register">Create account</a>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2TR8DE Synthetic Engine · Control</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="admin-pro-body">
+  <div class="admin-pro-shell">
+    <header class="admin-pro-header">
+      <div>
+        <span class="admin-eyebrow">2TR8DE SYNTHETIC ENGINE</span>
+        <h1>Access Control Center</h1>
+        <p>Approve verified students before they can access the private validation engine.</p>
+      </div>
+      <div class="admin-pro-actions">
+        <a href="/">Open Engine</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </header>
+
+    <section class="admin-kpi-grid">
+      <div class="admin-kpi"><span>Pending</span><strong>{{ pending_users|length }}</strong></div>
+      <div class="admin-kpi"><span>Approved</span><strong>{{ approved_users|length }}</strong></div>
+      <div class="admin-kpi"><span>Access Mode</span><strong>Manual</strong></div>
+      <div class="admin-kpi"><span>Security</span><strong>Private</strong></div>
+    </section>
+
+    <section class="admin-pro-card">
+      <div class="section-title">
+        <div>
+          <span>REVIEW QUEUE</span>
+          <h2>Pending Approval</h2>
+        </div>
+        <small>Students cannot enter until approved.</small>
+      </div>
+
+      {% if pending_users %}
+      <div class="admin-pro-table">
+        {% for u in pending_users %}
+        <div class="admin-pro-row">
+          <div class="user-meta">
+            <div class="avatar">{{ u.name[:1] | upper }}</div>
+            <div>
+              <strong>{{ u.name }}</strong>
+              <small>@{{ u.username }} · {{ u.role }}</small>
+            </div>
+          </div>
+          <div class="admin-row-actions">
+            <form method="POST" action="/control/{{ request.view_args.secret }}/approve/{{ u.username }}">
+              <button class="approve-btn" type="submit">Approve</button>
+            </form>
+            <form method="POST" action="/control/{{ request.view_args.secret }}/reject/{{ u.username }}">
+              <button class="reject-btn" type="submit">Reject</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state-premium">
+        <strong>No pending users</strong>
+        <span>New registrations will appear here for manual approval.</span>
+      </div>
+      {% endif %}
+    </section>
+
+    <section class="admin-pro-card">
+      <div class="section-title">
+        <div>
+          <span>ACTIVE ACCESS</span>
+          <h2>Approved Users</h2>
+        </div>
+      </div>
+      <div class="admin-pro-table">
+        {% for u in approved_users %}
+        <div class="admin-pro-row">
+          <div class="user-meta">
+            <div class="avatar approved-avatar">{{ u.name[:1] | upper }}</div>
+            <div>
+              <strong>{{ u.name }}</strong>
+              <small>@{{ u.username }} · {{ u.role }}</small>
+            </div>
+          </div>
+          <div class="admin-row-actions">
+            <span class="approved-badge">Approved</span>
+            {% if u.username != "admin" %}
+            <form method="POST" action="/control/{{ request.view_args.secret }}/revoke/{{ u.username }}" onsubmit="return confirm('Revoke access for {{ u.username }}?');">
+              <button class="revoke-btn" type="submit">Revoke Access</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2TR8DE · Sign In</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,sans-serif;
+  background:
+    radial-gradient(circle at 22% 18%,rgba(240,192,64,.18),transparent 28%),
+    radial-gradient(circle at 78% 28%,rgba(0,212,255,.14),transparent 30%),
+    linear-gradient(145deg,#020305 0%,#06111b 48%,#020305 100%);
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  opacity:.22;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(circle at center,black 0%,transparent 72%);
+  pointer-events:none;
+}
+.shell{
+  position:relative;
+  z-index:2;
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:40px;
+  align-items:center;
+  padding:60px clamp(28px,6vw,90px);
+}
+.left span{
+  display:inline-flex;
+  border:1px solid rgba(0,212,255,.28);
+  background:rgba(0,212,255,.07);
+  color:#00d4ff;
+  border-radius:999px;
+  padding:9px 13px;
+  font-size:12px;
+  letter-spacing:.18em;
+  font-weight:900;
+  margin-bottom:24px;
+}
+.left h1{
+  font-size:clamp(54px,7vw,104px);
+  line-height:.88;
+  letter-spacing:-.075em;
+  font-weight:800;
+  max-width:760px;
+}
+.gold{color:#f0c040}
+.left p{
+  color:#aeb7c4;
+  max-width:600px;
+  font-size:18px;
+  line-height:1.7;
+  margin-top:28px;
+}
+.card{
+  width:min(440px,100%);
+  justify-self:end;
+  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(180deg,rgba(14,20,31,.72),rgba(4,8,14,.82));
+  backdrop-filter:blur(28px);
+  border-radius:34px;
+  padding:34px;
+  box-shadow:0 40px 120px rgba(0,0,0,.55),0 0 80px rgba(0,212,255,.07),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.brand{display:flex;align-items:center;gap:14px;margin-bottom:30px}
+.mark{
+  width:56px;height:56px;border-radius:18px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#f0c040,#96670e);
+  color:#05070b;font-weight:1000;font-size:22px;letter-spacing:-.08em;
+  box-shadow:0 0 40px rgba(240,192,64,.24);
+}
+.brand h2{font-size:19px;letter-spacing:-.02em}
+.brand p{color:#8b949e;font-size:13px;margin-top:3px}
+.copy{margin-bottom:24px}
+.copy small{color:#00d4ff;font-size:11px;letter-spacing:.18em;font-weight:900}
+.copy h3{font-size:34px;line-height:1;letter-spacing:-.05em;margin:10px 0 8px}
+.copy p{color:#aeb7c4;font-size:14px;line-height:1.55}
+.error-box{
+  border:1px solid rgba(255,91,110,.35);
+  background:rgba(255,91,110,.1);
+  color:#ff9daa;
+  border-radius:16px;
+  padding:12px 14px;
+  margin-bottom:16px;
+  font-weight:800;
+  font-size:13px;
+}
+form{display:grid;gap:13px}
+.field{position:relative}
+.field input{
+  width:100%;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(0,0,0,.24);
+  color:#fff;
+  border-radius:16px;
+  padding:18px 16px 10px;
+  font-size:15px;
+  outline:none;
+}
+.field label{
+  position:absolute;left:16px;top:8px;
+  color:#8b949e;
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-weight:900;
+  pointer-events:none;
+}
+.field input:focus{
+  border-color:rgba(240,192,64,.62);
+  box-shadow:0 0 0 4px rgba(240,192,64,.08);
+}
+button{
+  margin-top:8px;
+  border:0;
+  border-radius:17px;
+  padding:16px 18px;
+  background:linear-gradient(135deg,#f0c040,#d99b1d);
+  color:#05070b;
+  font-size:15px;
+  font-weight:1000;
+  letter-spacing:.04em;
+  cursor:pointer;
+  box-shadow:0 20px 48px rgba(240,192,64,.18);
+}
+.note{margin-top:20px;text-align:center;color:#8b949e;font-size:13px;line-height:1.8}
+.note a{color:#00d4ff;text-decoration:none;font-weight:900}
+@media(max-width:900px){
+  .shell{grid-template-columns:1fr;padding:36px 22px}
+  .left{text-align:center}
+  .left h1{font-size:clamp(42px,13vw,72px);margin:0 auto}
+  .left p{margin-inline:auto}
+  .card{justify-self:center}
+}
+</style>
+</head>
+
+<body>
+<main class="shell">
+  <section class="left">
+    <span>PRIVATE VALIDATION ENGINE</span>
+    <h1>Access the <span class="gold">Synthetic Engine.</span></h1>
+    <p>Sign in to run StrategyQuant validation, synthetic equity curve stress tests, Monte Carlo analysis and portfolio-level robustness scoring.</p>
+  </section>
+
+  <section class="card">
+    <div class="brand">
+      <div class="mark">SE</div>
+      <div>
+        <h2>2TR8DE Synthetic Engine</h2>
+        <p>Private access portal</p>
+      </div>
+    </div>
+
+    <div class="copy">
+      <small>SECURE LOGIN</small>
+      <h3>Sign In</h3>
+      <p>Approved students and admins only.</p>
+    </div>
+
+    {% if error %}
+    <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/login">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="your_username" required>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+
+      <button type="submit">Enter Engine</button>
+    </form>
+
+    <div class="note">
+      New student? <a href="/register">Request access</a><br>
+      Already registered? <a href="/status">Check status</a>
+    </div>
+  </section>
+</main>
+</body>
+</html>
